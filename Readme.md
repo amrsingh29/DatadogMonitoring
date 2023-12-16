@@ -38,9 +38,10 @@ Use the resulting token to create a Kubernetes secret that both flavors of Agent
 kubectl create secret generic datadog-auth-token --from-literal=token=<TOKEN_FROM_PREVIOUS_STEP>
 ```
 
-### [Deploy the cluster agent](https://www.datadoghq.com/blog/monitoring-kubernetes-with-datadog/#deploy-the-cluster-agent)
-- Copy the manifest to a local file and save it as "datadog-cluster-agent.yaml". The manifest creates a Kubernetes Deployment and Service for the Cluster Agent.
-- To deploy the Cluster Agent, apply the manifest:
+### Deploy the cluster agent
+#### Copy the manifest to a local file and save it as [datadog-cluster-agent.yaml](datadog-cluster-agent.yaml).
+The manifest creates a Kubernetes Deployment and Service for the Cluster Agent.
+#### Apply the manifest
 ```
 kubectl apply -f datadog-cluster-agent.yaml
 ```
