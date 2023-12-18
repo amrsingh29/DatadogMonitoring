@@ -29,6 +29,10 @@ spec:
             name: traceport
             protocol: TCP
         env:
+          - name: DD_KUBELET_TLS_VERIFY
+            value: "false"
+          - name: DD_SITE
+            value: us5.datadoghq.com
           - name: DD_API_KEY
             valueFrom:
               secretKeyRef:

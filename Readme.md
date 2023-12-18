@@ -39,7 +39,7 @@ kubectl create secret generic datadog-auth-token --from-literal=token=<TOKEN_FRO
 ```
 
 ### Deploy the cluster agent
-#### Copy the manifest to a local file and save it as [datadog-cluster-agent.yaml](datadog-cluster-agent.yaml).
+#### Copy the manifest to a local file and save it as [datadog-cluster-agent.yaml](datadog-cluster-agent.yaml)
 The manifest creates a Kubernetes Deployment and Service for the Cluster Agent.
 #### Apply the manifest
 ```
@@ -68,4 +68,34 @@ In the output, you should be able to see that the Cluster Agent is successfully 
       Events: Last Run: 0, Total: 52
       Service Checks: Last Run: 4, Total: 16
       Average Execution Time : 2.017s
+```
+
+### Deploy the node-based agent
+#### Copy the manifest to a local file and save it as [datadog-agent.yaml](datadog-agent.yaml)
+The manifest below builds on the standard Kubernetes Agent manifest to set two extra environment variables: DD_CLUSTER_AGENT_ENABLED (set to true), and DD_CLUSTER_AGENT_AUTH_TOKEN (set via Kubernetes secrets, just as in the manifest for the Cluster Agent)
+#### Apply the manifest
+```
+kubectl create -f datadog-agent.yaml
+```
+#### Check that the node-based Agent deployed successfully
+```
+kubectl get daemonset datadog-agent
+
+NAME            DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+datadog-agent   3         3         3       3            3           <none>          12m
+```
+
+Run the status command for any one of your node-based Agents to verify that the node-based Agents are successfully communicating with the Cluster Agent.
+```
+#kubectl get pods -l app=datadog-agent
+
+NAME                  READY   STATUS    RESTARTS   AGE
+datadog-agent-7vzqh   1/1     Running   0          27m
+datadog-agent-kfvpc   1/1     Running   0          27m
+datadog-agent-xvss5   1/1     Running   0          27m
+```
+
+Then use one of those pod names to query the Agent’s status:
+```
+kubectl exec -it datadog-agent-7vzqh agent status
 ```
