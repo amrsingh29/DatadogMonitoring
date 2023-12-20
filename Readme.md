@@ -13,7 +13,12 @@
 ### [Configure permission and secrets](https://www.datadoghq.com/blog/monitoring-kubernetes-with-datadog/#configure-permissions-and-secrets)
 
 #### Create ClusterRole, ClusterRoleBinding, and ServiceAccount
-The following manifests create two sets of permissions: one for the Cluster Agent, which has specific permissions for collecting cluster-level metrics and Kubernetes events from the Kubernetes API, and a more limited set of permissions for the node-based Agent. Deploying these two manifests will create a ClusterRole, ClusterRoleBinding, and ServiceAccount for each flavor of Agent:
+The following manifests create two sets of permissions: one for the Cluster Agent, which has specific permissions for collecting cluster-level metrics and Kubernetes events from the Kubernetes API, and a more limited set of permissions for the node-based Agent.
+Deploying these two manifests will create: 
+- ClusterRole
+- ClusterRoleBinding
+- ServiceAccount
+for each flavor of Agent.
 ```
 kubectl create -f "https://raw.githubusercontent.com/DataDog/datadog-agent/master/Dockerfiles/manifests/cluster-agent/cluster-agent-rbac.yaml"
 kubectl create -f "https://raw.githubusercontent.com/DataDog/datadog-agent/master/Dockerfiles/manifests/cluster-agent/rbac.yaml"
@@ -22,6 +27,8 @@ kubectl create -f "https://raw.githubusercontent.com/DataDog/datadog-agent/maste
 #### Create secrets
 Create a Kubernetes secret to provide your Datadog API key to the Agent without embedding the API key in your deployment manifests (which you may wish to manage in source control). To create the secret, run the following command using an [API key from your Datadog account](https://us5.datadoghq.com/organization-settings/api-keys):
 ![Alt text](image.png)
+
+
 
 ```
 kubectl create secret generic datadog-secret --from-literal api-key="<YOUR_API_KEY>"
@@ -48,10 +55,15 @@ kubectl apply -f datadog-cluster-agent.yaml
 #### Check that the Cluster Agent deployed successfully
 ```
 kubectl get pods -l app=datadog-cluster-agent
-
+```
+Result:
+```
 NAME                                     READY   STATUS    RESTARTS   AGE
 datadog-cluster-agent-7477d549ff-s42zx   1/1     Running   0          11s
+```
 
+Check the status of the datadog-cluster-agent.
+```
 kubectl exec -it datadog-cluster-agent-7477d549ff-s42zx datadog-cluster-agent status
 ```
 In the output, you should be able to see that the Cluster Agent is successfully connecting to the Kubernetes API server to collect events and cluster status data, as shown in this example snippet:
@@ -80,7 +92,9 @@ kubectl create -f datadog-agent.yaml
 #### Check that the node-based Agent deployed successfully
 ```
 kubectl get daemonset datadog-agent
-
+```
+Output:
+```
 NAME            DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 datadog-agent   3         3         3       3            3           <none>          12m
 ```

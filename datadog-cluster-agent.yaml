@@ -30,7 +30,7 @@ spec:
         ad.datadoghq.com/datadog-cluster-agent.init_configs: '[{}]'
         ad.datadoghq.com/datadog-cluster-agent.instances: '[{"prometheus_url": "http://%%host%%:5000/metrics","namespace": "datadog.cluster_agent","metrics": ["go_goroutines","go_memstats_*","process_*","api_requests","datadog_requests","external_metrics", "cluster_checks_*"]}]'
     spec:
-      serviceAccountName: dca
+      serviceAccountName: datadog-cluster-agent
       containers:
       - image: datadog/cluster-agent:latest
         imagePullPolicy: Always
@@ -59,3 +59,7 @@ spec:
             value: "false"
           - name: DD_SITE
             value: us5.datadoghq.com
+          - name: DD_HOSTNAME
+            value: $(hostname)
+          - name: DD_HOSTNAME_TRUST_UTS_NAMESPACE
+            value: "true"
